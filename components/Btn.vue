@@ -33,7 +33,7 @@ export default {
 <style scoped>
 .btn_primary {
   @apply rounded-xl flex items-center justify-center text-2xl duration-100 text-blue-800;
-  box-shadow: 0.25rem 0.25rem 0.5rem rgb(0 0 0 / 10%), -0.35rem -0.35rem 0.5rem rgb(255 255 255 / 45%);
+  box-shadow: 0.15rem 0.15rem 0.35rem rgb(77 97 124 / 16%), -0.35rem -0.35rem 0.45rem rgb(255 255 255 / 45%);
 }
 
 #hcalc.dark .btn_primary {
