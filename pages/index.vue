@@ -90,6 +90,8 @@ export default {
      * current operand (this will be for number keys).
      */
     onNumpadKeypress (keyValue) {
+      // Prevent element focus when another element was clicked previously
+      document.activeElement.blur()
       const self = this
       function addCharacterToOperand () {
         self.currentOperand = self.currentOperand + (typeof keyValue !== 'string' ? toString(keyValue) : keyValue)
@@ -233,7 +235,7 @@ export default {
 }
 
 .footer_btn {
-  @apply inline-flex items-center justify-center p-2 text-blue-700 bg-blue-500 bg-opacity-5 hover:bg-opacity-10 rounded-xl duration-100;
+  @apply select-none outline-none inline-flex items-center justify-center p-2 text-blue-700 bg-blue-500 bg-opacity-5 hover:bg-opacity-10 rounded-xl duration-100;
 }
 
 #hcalc.dark .footer_btn {
