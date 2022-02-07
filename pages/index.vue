@@ -1,24 +1,57 @@
 <template>
-  <main class="fixed w-full h-full bg-blue-100 flex items-center align-center">
-    <div class="border border-black border-opacity-5 p-4 m-auto rounded-xl relative">
-      <div id="hcalc_screen" ref="screen" class="text-3xl flex flex-col text-right border-b border-black border-opacity-5 mb-4 h-16 overflow-hidden flex items-center justify-end text-monospace">
-        <div class="text-xl flex w-full h-6 justify-end items-center opacity-50">
-          {{ previousOperand }} {{ operation }}
+  <main
+    id="hcalc"
+    class="fixed w-full h-full flex items-center align-center"
+    :class="{
+      'bg-blue-100': !darkMode,
+      'bg-gray-900 text-gray-200 dark': darkMode
+    }"
+  >
+    <div class="flex flex-col gap-y-4 m-auto">
+      <div
+        id="hcalc_container"
+        class="border border-opacity-5 p-4 rounded-xl relative"
+        :class="{
+          'border-black': !darkMode,
+          'border-gray-300': darkMode
+        }"
+      >
+        <div
+          id="hcalc_screen"
+          ref="screen"
+          class="text-3xl flex flex-col text-right border-b border-opacity-5 mb-4 h-16 overflow-hidden flex items-center justify-end text-monospace"
+          :class="{
+            'border-black': !darkMode,
+            'border-gray-300': darkMode
+          }"
+        >
+          <div class="text-xl flex w-full h-6 justify-end items-center opacity-50">
+            {{ previousOperand }} {{ operation }}
+          </div>
+          <div class="flex items-center justify-end w-full h-12">
+            <span
+              v-for="(char, charIdx) in currentOperand"
+              :key="charIdx"
+              :class="'c_' + char"
+              v-text="char"
+            />
+          </div>
         </div>
-        <div class="flex items-center justify-end w-full h-12">
-          <span
-            v-for="(char, charIdx) in currentOperand"
-            :key="charIdx"
-            :class="'c_' + char"
-            v-text="char"
-          />
-        </div>
+        <KeyboardNumpad
+          @keypress="onNumpadKeypress"
+          @kpup="onNumpadKeyUp"
+          @kpdown="onNumpadKeyDown"
+        />
       </div>
-      <KeyboardNumpad
-        @keypress="onNumpadKeypress"
-        @kpup="onNumpadKeyUp"
-        @kpdown="onNumpadKeyDown"
-      />
+      <div class="flex gap-2">
+        <a class="footer_btn" :href="links.github">
+          <SolidCodeIcon class="w-6 h-6" />
+        </a>
+        <button class="footer_btn" @click="() => { darkMode = !darkMode }">
+          <SolidMoonIcon v-if="!darkMode" class="w-6 h-6" />
+          <SolidSunIcon v-else class="w-6 h-6" />
+        </button>
+      </div>
     </div>
     <audio ref="snd_keydown" :src="'/assets/keydown' + sndVarDown + '.wav'" hidden />
     <audio ref="snd_keyup" :src="'/assets/keyup' + sndVarUp + '.wav'" hidden />
@@ -26,6 +59,8 @@
 </template>
 
 <script>
+import pkg from '~/package.json'
+
 export default {
   name: 'IndexPage',
   data () {
@@ -34,7 +69,11 @@ export default {
       currentOperand: '',
       operation: null,
       sndVarDown: 1,
-      sndVarUp: 1
+      sndVarUp: 1,
+      links: {
+        github: 'https://github.com/' + pkg.author + '/' + pkg.name
+      },
+      darkMode: false
     }
   },
   mounted () {
@@ -57,7 +96,7 @@ export default {
       }
       const keyMethods = {
         /**
-         * Clear all then AC is pressed.
+         * Clear all when AC is pressed.
          */
         backspace () {
           self.clearAll()
@@ -189,14 +228,15 @@ export default {
 </script>
 
 <style scoped>
-#hcalc_screen .c_\+,
-#hcalc_screen .c_\-,
-#hcalc_screen .c_\*,
-#hcalc_screen .c_\/ {
-  @apply text-blue-500 font-bold px-2;
-}
-
 #hcalc_screen .c_\. {
   @apply text-blue-300 font-bold px-1;
+}
+
+.footer_btn {
+  @apply inline-flex items-center justify-center p-2 text-blue-700 bg-blue-500 bg-opacity-5 hover:bg-opacity-10 rounded-xl duration-100;
+}
+
+#hcalc.dark .footer_btn {
+  @apply bg-gray-800 text-gray-400;
 }
 </style>
